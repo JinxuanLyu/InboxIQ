@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>InboxIQ — Email Intelligence for Founders</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0c0c0e;
+    --bg2: #131316;
+    --bg3: #1a1a1f;
+    --border: rgba(255,255,255,0.08);
+    --border-bright: rgba(255,255,255,0.18);
+    --text: #e8e6e0;
+    --muted: #7a7870;
+    --accent: #c8f060;
+    --accent2: #f0a050;
+    --accent3: #60c8f0;
+    --danger: #f06060;
+    --success: #60f0a0;
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  html { font-size: 16px; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-weight: 300;
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    position: sticky;
+    top: 0;
+    background: rgba(12,12,14,0.92);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+
+  .logo { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; letter-spacing: -0.02em; color: var(--text); }
+  .logo span { color: var(--accent); }
+
+  .badge {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 2px 8px;
+    border-radius: 100px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  main { max-width: 860px; margin: 0 auto; padding: 3rem 2rem 6rem; }
+
+  .hero { margin-bottom: 3rem; animation: fadeUp 0.5s ease both; }
+
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+  }
+
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .hero p { color: var(--muted); font-size: 0.95rem; max-width: 480px; }
+
+  .input-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    animation: fadeUp 0.5s 0.1s ease both;
+    transition: border-color 0.2s;
+  }
+
+  .input-card:focus-within { border-color: var(--border-bright); }
+
+  .input-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 220px;
+    background: transparent;
+    border: none;
+    outline: none;
+    resize: vertical;
+    padding: 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--text);
+    line-height: 1.7;
+    caret-color: var(--accent);
+  }
+
+  textarea::placeholder { color: var(--muted); }
+
+  .date-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.6rem 1.25rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .date-row label {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  #email-date {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 0.73rem;
+    outline: none;
+    cursor: pointer;
+    color-scheme: dark;
+    transition: border-color 0.15s;
+  }
+
+  #email-date:focus { border-color: var(--border-bright); }
+
+  .date-hint { font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted); }
+
+  .input-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.25rem;
+    border-top: 1px solid var(--border);
+  }
+
+  #char-count { font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted); }
+
+  button#analyze-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent);
+    color: #0c0c0e;
+    border: none;
+    border-radius: 8px;
+    padding: 0.6rem 1.4rem;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+
+  button#analyze-btn:hover { opacity: 0.88; }
+  button#analyze-btn:active { transform: scale(0.97); }
+  button#analyze-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .spinner {
+    width: 14px; height: 14px;
+    border: 2px solid rgba(12,12,14,0.3);
+    border-top-color: #0c0c0e;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    display: none;
+  }
+
+  button#analyze-btn.loading .spinner { display: block; }
+  button#analyze-btn.loading .btn-text { opacity: 0.7; }
+
+  #results { display: none; animation: fadeUp 0.4s ease both; }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 2rem; }
+
+  .chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 100px;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    border: 1px solid var(--border);
+    background: var(--bg3);
+    letter-spacing: 0.04em;
+  }
+
+  .chip.priority-high { border-color: rgba(240,96,96,0.4); color: var(--danger); }
+  .chip.priority-medium { border-color: rgba(240,160,80,0.4); color: var(--accent2); }
+  .chip.priority-low { border-color: rgba(96,200,240,0.4); color: var(--accent3); }
+  .chip.action-true { border-color: rgba(200,240,96,0.35); color: var(--accent); }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 2.5rem;
+  }
+
+  .info-cell { background: var(--bg2); padding: 1rem 1.25rem; }
+
+  .info-cell-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+
+  .info-cell-value { font-size: 0.88rem; color: var(--text); line-height: 1.5; }
+  .info-cell.full { grid-column: 1 / -1; }
+
+  .drafts { display: flex; flex-direction: column; gap: 1.25rem; }
+
+  .draft-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .draft-card:hover { border-color: var(--border-bright); }
+
+  .draft-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .draft-meta { display: flex; align-items: center; gap: 10px; }
+  .draft-number { font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted); min-width: 20px; }
+  .draft-label { font-size: 0.9rem; font-weight: 500; color: var(--text); }
+
+  .draft-tone {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 2px 8px;
+    border-radius: 100px;
+  }
+
+  .draft-rationale {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.82rem;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    font-style: italic;
+  }
+
+  .draft-body {
+    padding: 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    line-height: 1.75;
+    color: var(--text);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .draft-actions { display: flex; gap: 8px; padding: 0.75rem 1.25rem; border-top: 1px solid var(--border); }
+
+  .btn-copy {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+    letter-spacing: 0.04em;
+  }
+
+  .btn-copy:hover { color: var(--text); border-color: var(--border-bright); }
+  .btn-copy.copied { color: var(--success); border-color: rgba(96,240,160,0.4); }
+
+  .error-box {
+    background: rgba(240,96,96,0.08);
+    border: 1px solid rgba(240,96,96,0.3);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    color: var(--danger);
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    display: none;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
+  }
+
+  @media (max-width: 600px) {
+    .info-grid { grid-template-columns: 1fr; }
+    .info-cell.full { grid-column: 1; }
+    main { padding: 2rem 1rem 4rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Inbox<span>IQ</span></div>
+  <div class="badge">Gemini 2.5 · Vertex AI</div>
+</header>
+
+<main>
+  <div class="hero">
+    <h1>Your email,<br/><em>understood.</em></h1>
+    <p>Paste any email. Get instant triage, key context extraction, and three strategic reply drafts — built for founders who can't afford to think slowly.</p>
+  </div>
+
+  <div class="input-card">
+    <div class="input-label">
+      <div class="dot"></div>
+      Paste email content
+    </div>
+    <textarea id="email-input" placeholder="Paste the full email here — subject, body, everything..."></textarea>
+    <div class="date-row">
+      <label for="email-date">Email sent on</label>
+      <input type="date" id="email-date" />
+      <span class="date-hint">leave blank for today</span>
+    </div>
+    <div class="input-footer">
+      <span id="char-count">0 characters</span>
+      <button id="analyze-btn" onclick="analyzeEmail()">
+        <div class="spinner"></div>
+        <span class="btn-text">Analyze →</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="error-box" id="error-box"></div>
+
+  <div id="results">
+    <div class="section-label">Classification</div>
+    <div class="chips" id="chips"></div>
+
+    <div class="section-label">Key intel</div>
+    <div class="info-grid" id="info-grid"></div>
+
+    <div class="section-label" style="margin-top: 2.5rem;">Sender research</div>
+    <div id="research-box" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;margin-bottom:2.5rem;font-size:0.85rem;line-height:1.7;color:var(--text);"></div>
+
+    <div class="section-label" style="margin-top: 2.5rem;">Reply drafts</div>
+    <div class="drafts" id="drafts"></div>
+  </div>
+</main>
+
+<script>
+const textarea = document.getElementById('email-input');
+const charCount = document.getElementById('char-count');
+const btn = document.getElementById('analyze-btn');
+const resultsEl = document.getElementById('results');
+const errorBox = document.getElementById('error-box');
+
+textarea.addEventListener('input', () => {
+  const n = textarea.value.length;
+  charCount.textContent = n.toLocaleString() + ' character' + (n !== 1 ? 's' : '');
+});
+
+function setLoading(on) {
+  btn.disabled = on;
+  btn.classList.toggle('loading', on);
+  btn.querySelector('.btn-text').textContent = on ? 'Analyzing...' : 'Analyze →';
+}
+
+function showError(msg) { errorBox.style.display = 'block'; errorBox.textContent = msg; }
+function hideError() { errorBox.style.display = 'none'; }
+function priorityClass(p) { return p ? 'priority-' + p.toLowerCase() : ''; }
+function cap(s) {
+  if (!s) return '—';
+  return String(s).charAt(0).toUpperCase() + String(s).slice(1);
+}
+
+function renderChips(classification) {
+  const chips = document.getElementById('chips');
+  chips.innerHTML = '';
+  const items = [
+    { label: '⬆ ' + cap(classification.priority) + ' priority', cls: priorityClass(classification.priority) },
+    { label: cap(classification.category?.replace(/_/g, ' ') || 'Other') },
+    { label: cap(classification.sentiment) },
+    classification.action_required ? { label: '✦ Action required', cls: 'action-true' } : null,
+    classification.deadline_detected ? { label: '⏱ ' + classification.deadline_detected } : null,
+  ].filter(Boolean);
+
+  items.forEach(item => {
+    const el = document.createElement('div');
+    el.className = 'chip ' + (item.cls || '');
+    el.textContent = item.label;
+    chips.appendChild(el);
+  });
+}
+
+function renderInfo(extracted) {
+  const grid = document.getElementById('info-grid');
+  grid.innerHTML = '';
+  const cells = [
+    { label: 'Sender', value: [extracted.sender_name, extracted.sender_role].filter(Boolean).join(' · ') || '—' },
+    { label: 'Respond within', value: extracted.suggested_response_window || '—' },
+    { label: 'Core ask', value: extracted.core_ask || '—', full: true },
+    { label: 'Key context', value: extracted.key_context || '—', full: true },
+  ];
+
+  if (extracted.open_questions && extracted.open_questions.length) {
+    cells.push({
+      label: 'Open questions',
+      value: extracted.open_questions.map((q, i) => (i + 1) + '. ' + q).join('\n'),
+      full: true
+    });
+  }
+
+  cells.forEach(cell => {
+    const el = document.createElement('div');
+    el.className = 'info-cell' + (cell.full ? ' full' : '');
+    el.innerHTML = `<div class="info-cell-label">${cell.label}</div><div class="info-cell-value" style="white-space:pre-line">${cell.value}</div>`;
+    grid.appendChild(el);
+  });
+}
+
+function renderDrafts(replies) {
+  const container = document.getElementById('drafts');
+  container.innerHTML = '';
+  replies.forEach((reply, i) => {
+    const card = document.createElement('div');
+    card.className = 'draft-card';
+    card.style.animationDelay = (i * 0.08) + 's';
+    const draftText = (reply.draft || '').replace(/\\n/g, '\n');
+    card.innerHTML = `
+      <div class="draft-header">
+        <div class="draft-meta">
+          <span class="draft-number">0${i + 1}</span>
+          <span class="draft-label">${reply.label || 'Draft ' + (i+1)}</span>
+          <span class="draft-tone">${reply.tone || ''}</span>
+        </div>
+      </div>
+      <div class="draft-rationale">${reply.rationale || ''}</div>
+      <div class="draft-body" id="draft-body-${i}">${draftText}</div>
+      <div class="draft-actions">
+        <button class="btn-copy" onclick="copyDraft(${i}, this)">Copy draft</button>
+      </div>`;
+    container.appendChild(card);
+  });
+}
+
+async function copyDraft(i, btn) {
+  const text = document.getElementById('draft-body-' + i).textContent;
+  await navigator.clipboard.writeText(text);
+  btn.classList.add('copied');
+  btn.textContent = 'Copied ✓';
+  setTimeout(() => { btn.classList.remove('copied'); btn.textContent = 'Copy draft'; }, 2000);
+}
+
+async function analyzeEmail() {
+  const email = textarea.value.trim();
+  if (!email) { showError('Please paste an email first.'); return; }
+  if (email.length < 20) { showError('Please paste a full email to analyze.'); return; }
+  hideError();
+  setLoading(true);
+  resultsEl.style.display = 'none';
+
+  try {
+    const res = await fetch('/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email_content: email,
+        email_date: document.getElementById('email-date').value || null,
+      }),
+    });
+
+    if (!res.ok) throw new Error('Server error: ' + res.status);
+    const data = await res.json();
+    if (data.error) { showError(data.error); return; }
+
+    renderChips(data.classification || {});
+    renderInfo(data.extracted || {});
+    document.getElementById('research-box').textContent = data.research || 'No research available.';
+    renderDrafts(data.replies || []);
+
+    resultsEl.style.display = 'block';
+    resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  } catch (err) {
+    showError('Something went wrong: ' + err.message);
+  } finally {
+    setLoading(false);
+  }
+}
+
+textarea.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') analyzeEmail();
+});
+</script>
+</body>
+</html>
