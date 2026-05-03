@@ -2,7 +2,7 @@
 
 > Paste any email. Get instant triage, key context extraction, and three strategic reply drafts — built for founders who can't afford to think slowly.
 
-**Live URL:** `https://inboxiq-XXXX-uc.a.run.app` *(replace after Cloud Run deploy)*
+**Live URL:** `https://inboxiq-192593734991.us-central1.run.app/`
 
 ---
 
