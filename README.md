@@ -161,7 +161,7 @@ email-agent-adk-final/
 | **Per email (full pipeline)** | ~3,800 total | **~$0.0013** |
 | **Per email (newsletter, skip research)** | ~2,800 total | **~$0.0010** |
 
-100 emails/day → ~$3–4/month per user in model costs. Priced at $29/month → ~88% gross margin.
+100 emails/day → ~$3–4/month per user in model costs. Priced at $29/month → ~85% gross margin.
 
 ---
 
