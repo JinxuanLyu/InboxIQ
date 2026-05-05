@@ -172,3 +172,5 @@ email-agent-adk-final/
 - **Backend:** FastAPI + Uvicorn
 - **Deployment:** Google Cloud Run
 - **Frontend:** Vanilla HTML/CSS/JS
+
+## Notes: Codes are powered by Claude, but the author gave the thoughts.
